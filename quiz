@@ -1,0 +1,73 @@
+const quizData = [
+  {
+    question: "What is the capital of France?",
+    answers: ["Paris", "Rome", "Berlin", "Madrid"],
+    correct: "Paris"
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    answers: ["Earth", "Mars", "Jupiter", "Saturn"],
+    correct: "Mars"
+  },
+  {
+    question: "Who wrote 'Hamlet'?",
+    answers: ["Leo Tolstoy", "Shakespeare", "Homer", "Charles Dickens"],
+    correct: "Shakespeare"
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const nextBtn = document.getElementById("nextBtn");
+const scoreEl = document.getElementById("score");
+
+function loadQuestion() {
+  const current = quizData[currentQuestion];
+  questionEl.textContent = current.question;
+  answersEl.innerHTML = "";
+
+  current.answers.forEach(answer => {
+    const btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.classList.add("answer-btn");
+    btn.addEventListener("click", () => selectAnswer(answer));
+    answersEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(answer) {
+  const correctAnswer = quizData[currentQuestion].correct;
+  if (answer === correctAnswer) {
+    score++;
+  }
+
+  Array.from(answersEl.children).forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === correctAnswer) {
+      btn.style.backgroundColor = "lightgreen";
+    } else if (btn.textContent === answer) {
+      btn.style.backgroundColor = "lightcoral";
+    }
+  });
+}
+
+nextBtn.addEventListener("click", () => {
+  if (currentQuestion < quizData.length - 1) {
+    currentQuestion++;
+    loadQuestion();
+  } else {
+    showScore();
+  }
+});
+
+function showScore() {
+  questionEl.style.display = "none";
+  answersEl.style.display = "none";
+  nextBtn.style.display = "none";
+  scoreEl.textContent = `You scored ${score} out of ${quizData.length}!`;
+}
+
+loadQuestion();
